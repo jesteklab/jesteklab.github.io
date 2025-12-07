@@ -8,6 +8,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   
   <style>
     :root {
@@ -42,6 +43,11 @@
       font-family: var(--font-tech);
       line-height: 1.6;
       overflow-x: hidden;
+      perspective: 1000px;
+    }
+    
+    html {
+      scroll-behavior: smooth;
     }
 
     /* --- BACKGROUND ANIMATION (Starfield) --- */
@@ -50,16 +56,32 @@
       pointer-events: none; z-index: -1;
       background: #020205;
     }
+    
+    /* 3D Canvas Background */
+    #threejs-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+    }
+    
     .star {
       position: absolute;
       width: 2px; height: 2px;
       background: white;
       opacity: 0.8;
-      animation: twinkle var(--duration) infinite ease-in-out;
+      animation: twinkle var(--duration) infinite ease-in-out, float-star 20s infinite ease-in-out;
     }
     @keyframes twinkle {
       0%, 100% { opacity: 0.3; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.5); box-shadow: 0 0 4px white; }
+    }
+    @keyframes float-star {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
     }
 
     /* --- TYPOGRAPHY --- */
@@ -76,6 +98,12 @@
       color: #fff;
       text-shadow: 4px 4px 0px var(--pink);
       margin-bottom: 20px;
+      animation: title-float 3s ease-in-out infinite;
+    }
+    
+    @keyframes title-float {
+      0%, 100% { transform: translateY(0px) rotateX(0deg); }
+      50% { transform: translateY(-10px) rotateX(2deg); }
     }
 
     h2 {
@@ -85,6 +113,35 @@
       margin-bottom: 30px;
       border-left: 5px solid var(--pink);
       padding-left: 15px;
+      animation: slide-in-left 0.6s ease-out;
+      position: relative;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--pink), var(--cyan));
+      animation: border-expand 1s ease-out forwards;
+      animation-delay: 0.3s;
+    }
+    
+    @keyframes slide-in-left {
+      from { 
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes border-expand {
+      to { width: 100%; }
     }
 
     h3 {
@@ -102,8 +159,22 @@
       position: sticky; top: 0; z-index: 1000;
       background: rgba(2, 2, 5, 0.9);
       border-bottom: 1px solid var(--cyan);
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
       padding: 15px 0;
+      transform-style: preserve-3d;
+      box-shadow: 0 10px 30px rgba(77, 238, 234, 0.1);
+      animation: nav-slide-down 0.5s ease-out;
+    }
+    
+    @keyframes nav-slide-down {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
     .nav-inner {
       max-width: 1200px; margin: 0 auto; padding: 0 20px;
@@ -125,10 +196,13 @@
       color: var(--cyan);
       text-transform: uppercase;
       position: relative;
+      transform-style: preserve-3d;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
     .nav-links a:hover {
       color: var(--green);
-      text-shadow: 0 0 8px var(--green);
+      text-shadow: 0 0 8px var(--green), 0 0 20px var(--green);
+      transform: translateY(-3px) scale(1.1);
     }
     .nav-links a::before {
       content: '>';
@@ -144,6 +218,7 @@
       padding: 60px 20px;
       text-align: left;
       position: relative;
+      transform-style: preserve-3d;
     }
     .hero-container {
       max-width: 1000px;
@@ -151,15 +226,52 @@
       padding: 40px;
       background: rgba(10, 10, 16, 0.6);
       position: relative;
+      transform-style: preserve-3d;
+      animation: hero-entrance 1s ease-out, hero-float 6s ease-in-out infinite;
+      box-shadow: 0 20px 60px rgba(77, 238, 234, 0.2), inset 0 0 30px rgba(77, 238, 234, 0.05);
+    }
+    
+    @keyframes hero-entrance {
+      from {
+        opacity: 0;
+        transform: perspective(1000px) rotateX(-20deg) translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: perspective(1000px) rotateX(0deg) translateY(0);
+      }
+    }
+    
+    @keyframes hero-float {
+      0%, 100% { 
+        transform: perspective(1000px) rotateX(0deg) translateY(0px);
+        box-shadow: 0 20px 60px rgba(77, 238, 234, 0.2), inset 0 0 30px rgba(77, 238, 234, 0.05);
+      }
+      50% { 
+        transform: perspective(1000px) rotateX(2deg) translateY(-15px);
+        box-shadow: 0 30px 80px rgba(77, 238, 234, 0.3), inset 0 0 40px rgba(77, 238, 234, 0.1);
+      }
     }
     /* Decorative corners */
     .hero-container::before {
       content: ""; position: absolute; top: -2px; left: -2px; width: 20px; height: 20px;
       border-top: 4px solid var(--green); border-left: 4px solid var(--green);
+      animation: corner-glow 2s ease-in-out infinite;
     }
     .hero-container::after {
       content: ""; position: absolute; bottom: -2px; right: -2px; width: 20px; height: 20px;
       border-bottom: 4px solid var(--green); border-right: 4px solid var(--green);
+      animation: corner-glow 2s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+    
+    @keyframes corner-glow {
+      0%, 100% {
+        box-shadow: 0 0 5px var(--green);
+      }
+      50% {
+        box-shadow: 0 0 20px var(--green), 0 0 30px var(--green);
+      }
     }
 
     .kicker {
@@ -170,6 +282,17 @@
       font-size: 0.7rem;
       padding: 5px 10px;
       margin-bottom: 20px;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 0 5px var(--pink);
+      }
+      50% {
+        box-shadow: 0 0 20px var(--pink), 0 0 30px var(--pink);
+        transform: scale(1.05);
+      }
     }
 
     .sub {
@@ -194,11 +317,32 @@
       cursor: pointer;
       margin-right: 15px;
       margin-bottom: 10px;
-      transition: transform 0.1s;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      overflow: hidden;
     }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
     .btn:hover {
-      transform: translate(2px, 2px);
-      box-shadow: 2px 2px 0px #fff;
+      transform: translate(2px, 2px) scale(1.05) rotateZ(-2deg);
+      box-shadow: 2px 2px 0px #fff, 0 0 20px var(--green);
       background: var(--green);
     }
     .btn-ghost {
@@ -210,10 +354,28 @@
     .btn-ghost:hover {
       background: #fff;
       color: #000;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
     }
 
     /* --- SECTIONS --- */
-    .section { padding: 80px 20px; position: relative; }
+    .section { 
+      padding: 80px 20px; 
+      position: relative;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fade-in-up 0.8s ease-out forwards;
+    }
+    
+    .section:nth-child(even) {
+      animation-delay: 0.1s;
+    }
+    
+    @keyframes fade-in-up {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     .container { max-width: 1100px; margin: 0 auto; }
     
     /* Grid System */
@@ -229,11 +391,43 @@
       border: 1px solid var(--cyan);
       padding: 25px;
       position: relative;
-      transition: 0.3s;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform-style: preserve-3d;
+      perspective: 1000px;
     }
+    
     .card:hover {
       border-color: var(--pink);
-      box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.2), 0 20px 40px rgba(77, 238, 234, 0.3);
+      transform: translateY(-15px) rotateX(5deg) scale(1.02);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(77, 238, 234, 0.05) 100%);
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(77, 238, 234, 0.1) 50%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+    
+    .card:hover::before {
+      opacity: 1;
+      animation: shine 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+      }
+      100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+      }
     }
     
     /* Card Header decoration */
@@ -251,6 +445,17 @@
       color: var(--bg-color);
       background: var(--yellow);
       padding: 4px 8px;
+      display: inline-block;
+      animation: tag-bounce 2s ease-in-out infinite;
+    }
+    
+    @keyframes tag-bounce {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-5px) scale(1.05);
+      }
     }
 
     ul { list-style: none; padding: 0; }
@@ -270,12 +475,56 @@
       padding: 15px;
       text-align: center;
       background: #000;
+      transition: all 0.4s ease;
+      transform-style: preserve-3d;
+      position: relative;
+      overflow: hidden;
     }
+    
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(77, 238, 234, 0.1), transparent);
+      transform: rotate(45deg);
+      animation: stat-scan 3s linear infinite;
+    }
+    
+    @keyframes stat-scan {
+      0% {
+        transform: translateY(-100%) rotate(45deg);
+      }
+      100% {
+        transform: translateY(100%) rotate(45deg);
+      }
+    }
+    
+    .stat-box:hover {
+      border-color: var(--cyan);
+      transform: translateY(-10px) rotateY(5deg);
+      box-shadow: 0 15px 40px rgba(77, 238, 234, 0.4), inset 0 0 20px rgba(77, 238, 234, 0.1);
+    }
+    
     .stat-num {
       font-family: var(--font-pixel);
       font-size: 1.5rem;
       color: var(--green);
       display: block; margin-bottom: 5px;
+      animation: stat-glow 2s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+    
+    @keyframes stat-glow {
+      0%, 100% {
+        text-shadow: 0 0 10px var(--green);
+      }
+      50% {
+        text-shadow: 0 0 20px var(--green), 0 0 30px var(--green), 0 0 40px var(--green);
+      }
     }
     
     .divider {
@@ -283,6 +532,19 @@
       background: repeating-linear-gradient(90deg, var(--cyan) 0, var(--cyan) 10px, transparent 10px, transparent 20px);
       margin: 40px 0;
       opacity: 0.5;
+      position: relative;
+      animation: divider-pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes divider-pulse {
+      0%, 100% {
+        opacity: 0.5;
+        box-shadow: 0 0 5px var(--cyan);
+      }
+      50% {
+        opacity: 0.8;
+        box-shadow: 0 0 15px var(--cyan), 0 0 25px var(--cyan);
+      }
     }
 
     /* --- FOOTER --- */
@@ -316,6 +578,7 @@
 </head>
 <body>
 
+  <canvas id="threejs-canvas"></canvas>
   <div class="stars" id="starContainer"></div>
 
   <div class="nav">
@@ -576,6 +839,181 @@
       star.style.setProperty('--duration', duration + 's');
       starContainer.appendChild(star);
     }
+    
+    // Three.js 3D Background Scene
+    const canvas = document.getElementById('threejs-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    
+    // Create multiple rotating 3D geometric shapes
+    const geometries = [
+      new THREE.TorusGeometry(10, 3, 16, 100),
+      new THREE.OctahedronGeometry(8, 0),
+      new THREE.IcosahedronGeometry(7, 0),
+      new THREE.TetrahedronGeometry(9, 0)
+    ];
+    
+    const materials = [
+      new THREE.MeshBasicMaterial({ color: 0x4deeea, wireframe: true, transparent: true, opacity: 0.15 }),
+      new THREE.MeshBasicMaterial({ color: 0xff0055, wireframe: true, transparent: true, opacity: 0.15 }),
+      new THREE.MeshBasicMaterial({ color: 0xb4ff00, wireframe: true, transparent: true, opacity: 0.15 }),
+      new THREE.MeshBasicMaterial({ color: 0xf1c40f, wireframe: true, transparent: true, opacity: 0.15 })
+    ];
+    
+    const meshes = [];
+    
+    geometries.forEach((geometry, index) => {
+      const mesh = new THREE.Mesh(geometry, materials[index]);
+      mesh.position.set(
+        (Math.random() - 0.5) * 50,
+        (Math.random() - 0.5) * 50,
+        (Math.random() - 0.5) * 50 - 30
+      );
+      mesh.rotation.set(
+        Math.random() * Math.PI,
+        Math.random() * Math.PI,
+        Math.random() * Math.PI
+      );
+      scene.add(mesh);
+      meshes.push(mesh);
+    });
+    
+    // Add particle system
+    const particleCount = 1000;
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      particlePositions[i] = (Math.random() - 0.5) * 100;
+      particlePositions[i + 1] = (Math.random() - 0.5) * 100;
+      particlePositions[i + 2] = (Math.random() - 0.5) * 100;
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particlesMaterial = new THREE.PointsMaterial({
+      color: 0x4deeea,
+      size: 0.5,
+      transparent: true,
+      opacity: 0.6
+    });
+    
+    const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particleSystem);
+    
+    camera.position.z = 50;
+    
+    // Mouse tracking for parallax effect
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    document.addEventListener('mousemove', (event) => {
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+    
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      // Rotate all meshes
+      meshes.forEach((mesh, index) => {
+        mesh.rotation.x += 0.001 * (index + 1);
+        mesh.rotation.y += 0.002 * (index + 1);
+        mesh.rotation.z += 0.0015 * (index + 1);
+      });
+      
+      // Rotate particle system
+      particleSystem.rotation.y += 0.0005;
+      
+      // Camera follows mouse with smooth parallax
+      camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
+      camera.position.y += (mouseY * 5 - camera.position.y) * 0.05;
+      camera.lookAt(scene.position);
+      
+      renderer.render(scene, camera);
+    }
+    
+    animate();
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
+    // 3D Card Tilt Effect
+    const cards = document.querySelectorAll('.card');
+    
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 10;
+        const rotateY = (centerX - x) / 10;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-15px) scale(1.02)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+    
+    // Scroll reveal animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fade-in-up 0.8s ease-out forwards';
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.section, .card, .stat-box').forEach(el => {
+      observer.observe(el);
+    });
+    
+    // Animated counter for stats
+    function animateValue(element, start, end, duration) {
+      const range = end - start;
+      const increment = range / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= end) {
+          element.textContent = end;
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current);
+        }
+      }, 16);
+    }
+    
+    // Parallax scrolling effect
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const parallaxElements = document.querySelectorAll('.hero-container');
+      
+      parallaxElements.forEach(el => {
+        const speed = 0.5;
+        el.style.transform = `translateY(${scrolled * speed}px)`;
+      });
+    });
   </script>
 </body>
 </html>
