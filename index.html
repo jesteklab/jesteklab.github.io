@@ -42,6 +42,11 @@
       font-family: var(--font-tech);
       line-height: 1.6;
       overflow-x: hidden;
+      perspective: 1000px;
+    }
+    
+    html {
+      scroll-behavior: smooth;
     }
 
     /* --- BACKGROUND ANIMATION (Starfield) --- */
@@ -50,16 +55,90 @@
       pointer-events: none; z-index: -1;
       background: #020205;
     }
+    
+    /* 3D CSS Shapes Background */
+    .geometric-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .shape {
+      position: absolute;
+      transform-style: preserve-3d;
+      animation: rotate3d 20s linear infinite;
+    }
+    
+    .shape.cube {
+      width: 100px;
+      height: 100px;
+      top: 20%;
+      left: 10%;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .shape.pyramid {
+      width: 0;
+      height: 0;
+      top: 60%;
+      right: 15%;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-bottom: 100px solid rgba(77, 238, 234, 0.1);
+      animation: float 10s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+    
+    .shape.octagon {
+      width: 120px;
+      height: 120px;
+      top: 40%;
+      right: 25%;
+      background: rgba(255, 0, 85, 0.08);
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+      animation: float 12s ease-in-out infinite;
+      animation-delay: 4s;
+    }
+    
+    .shape.hexagon {
+      width: 80px;
+      height: 80px;
+      top: 70%;
+      left: 25%;
+      background: rgba(180, 255, 0, 0.1);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      animation: float 9s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+    
+    @keyframes rotate3d {
+      0% {
+        transform: perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+      }
+      100% {
+        transform: perspective(1000px) rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+      }
+    }
+    
     .star {
       position: absolute;
       width: 2px; height: 2px;
       background: white;
       opacity: 0.8;
-      animation: twinkle var(--duration) infinite ease-in-out;
+      animation: twinkle var(--duration) infinite ease-in-out, float-star 20s infinite ease-in-out;
     }
     @keyframes twinkle {
       0%, 100% { opacity: 0.3; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.5); box-shadow: 0 0 4px white; }
+    }
+    @keyframes float-star {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
     }
 
     /* --- TYPOGRAPHY --- */
@@ -76,6 +155,12 @@
       color: #fff;
       text-shadow: 4px 4px 0px var(--pink);
       margin-bottom: 20px;
+      animation: title-float 3s ease-in-out infinite;
+    }
+    
+    @keyframes title-float {
+      0%, 100% { transform: translateY(0px) rotateX(0deg); }
+      50% { transform: translateY(-10px) rotateX(2deg); }
     }
 
     h2 {
@@ -85,6 +170,35 @@
       margin-bottom: 30px;
       border-left: 5px solid var(--pink);
       padding-left: 15px;
+      animation: slide-in-left 0.6s ease-out;
+      position: relative;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--pink), var(--cyan));
+      animation: border-expand 1s ease-out forwards;
+      animation-delay: 0.3s;
+    }
+    
+    @keyframes slide-in-left {
+      from { 
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes border-expand {
+      to { width: 100%; }
     }
 
     h3 {
@@ -102,8 +216,22 @@
       position: sticky; top: 0; z-index: 1000;
       background: rgba(2, 2, 5, 0.9);
       border-bottom: 1px solid var(--cyan);
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
       padding: 15px 0;
+      transform-style: preserve-3d;
+      box-shadow: 0 10px 30px rgba(77, 238, 234, 0.1);
+      animation: nav-slide-down 0.5s ease-out;
+    }
+    
+    @keyframes nav-slide-down {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
     .nav-inner {
       max-width: 1200px; margin: 0 auto; padding: 0 20px;
@@ -125,10 +253,13 @@
       color: var(--cyan);
       text-transform: uppercase;
       position: relative;
+      transform-style: preserve-3d;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
     .nav-links a:hover {
       color: var(--green);
-      text-shadow: 0 0 8px var(--green);
+      text-shadow: 0 0 8px var(--green), 0 0 20px var(--green);
+      transform: translateY(-3px) scale(1.1);
     }
     .nav-links a::before {
       content: '>';
@@ -144,6 +275,7 @@
       padding: 60px 20px;
       text-align: left;
       position: relative;
+      transform-style: preserve-3d;
     }
     .hero-container {
       max-width: 1000px;
@@ -151,15 +283,52 @@
       padding: 40px;
       background: rgba(10, 10, 16, 0.6);
       position: relative;
+      transform-style: preserve-3d;
+      animation: hero-entrance 1s ease-out, hero-float 6s ease-in-out infinite;
+      box-shadow: 0 20px 60px rgba(77, 238, 234, 0.2), inset 0 0 30px rgba(77, 238, 234, 0.05);
+    }
+    
+    @keyframes hero-entrance {
+      from {
+        opacity: 0;
+        transform: perspective(1000px) rotateX(-20deg) translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: perspective(1000px) rotateX(0deg) translateY(0);
+      }
+    }
+    
+    @keyframes hero-float {
+      0%, 100% { 
+        transform: perspective(1000px) rotateX(0deg) translateY(0px);
+        box-shadow: 0 20px 60px rgba(77, 238, 234, 0.2), inset 0 0 30px rgba(77, 238, 234, 0.05);
+      }
+      50% { 
+        transform: perspective(1000px) rotateX(2deg) translateY(-15px);
+        box-shadow: 0 30px 80px rgba(77, 238, 234, 0.3), inset 0 0 40px rgba(77, 238, 234, 0.1);
+      }
     }
     /* Decorative corners */
     .hero-container::before {
       content: ""; position: absolute; top: -2px; left: -2px; width: 20px; height: 20px;
       border-top: 4px solid var(--green); border-left: 4px solid var(--green);
+      animation: corner-glow 2s ease-in-out infinite;
     }
     .hero-container::after {
       content: ""; position: absolute; bottom: -2px; right: -2px; width: 20px; height: 20px;
       border-bottom: 4px solid var(--green); border-right: 4px solid var(--green);
+      animation: corner-glow 2s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+    
+    @keyframes corner-glow {
+      0%, 100% {
+        box-shadow: 0 0 5px var(--green);
+      }
+      50% {
+        box-shadow: 0 0 20px var(--green), 0 0 30px var(--green);
+      }
     }
 
     .kicker {
@@ -170,6 +339,17 @@
       font-size: 0.7rem;
       padding: 5px 10px;
       margin-bottom: 20px;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 0 5px var(--pink);
+      }
+      50% {
+        box-shadow: 0 0 20px var(--pink), 0 0 30px var(--pink);
+        transform: scale(1.05);
+      }
     }
 
     .sub {
@@ -194,11 +374,32 @@
       cursor: pointer;
       margin-right: 15px;
       margin-bottom: 10px;
-      transition: transform 0.1s;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      overflow: hidden;
     }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
     .btn:hover {
-      transform: translate(2px, 2px);
-      box-shadow: 2px 2px 0px #fff;
+      transform: translate(2px, 2px) scale(1.05) rotateZ(-2deg);
+      box-shadow: 2px 2px 0px #fff, 0 0 20px var(--green);
       background: var(--green);
     }
     .btn-ghost {
@@ -210,10 +411,28 @@
     .btn-ghost:hover {
       background: #fff;
       color: #000;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
     }
 
     /* --- SECTIONS --- */
-    .section { padding: 80px 20px; position: relative; }
+    .section { 
+      padding: 80px 20px; 
+      position: relative;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fade-in-up 0.8s ease-out forwards;
+    }
+    
+    .section:nth-child(even) {
+      animation-delay: 0.1s;
+    }
+    
+    @keyframes fade-in-up {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     .container { max-width: 1100px; margin: 0 auto; }
     
     /* Grid System */
@@ -229,11 +448,43 @@
       border: 1px solid var(--cyan);
       padding: 25px;
       position: relative;
-      transition: 0.3s;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform-style: preserve-3d;
+      perspective: 1000px;
     }
+    
     .card:hover {
       border-color: var(--pink);
-      box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.2), 0 20px 40px rgba(77, 238, 234, 0.3);
+      transform: translateY(-15px) rotateX(5deg) scale(1.02);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(77, 238, 234, 0.05) 100%);
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(77, 238, 234, 0.1) 50%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+    
+    .card:hover::before {
+      opacity: 1;
+      animation: shine 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+      }
+      100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+      }
     }
     
     /* Card Header decoration */
@@ -251,6 +502,17 @@
       color: var(--bg-color);
       background: var(--yellow);
       padding: 4px 8px;
+      display: inline-block;
+      animation: tag-bounce 2s ease-in-out infinite;
+    }
+    
+    @keyframes tag-bounce {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-5px) scale(1.05);
+      }
     }
 
     ul { list-style: none; padding: 0; }
@@ -270,12 +532,56 @@
       padding: 15px;
       text-align: center;
       background: #000;
+      transition: all 0.4s ease;
+      transform-style: preserve-3d;
+      position: relative;
+      overflow: hidden;
     }
+    
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(77, 238, 234, 0.1), transparent);
+      transform: rotate(45deg);
+      animation: stat-scan 3s linear infinite;
+    }
+    
+    @keyframes stat-scan {
+      0% {
+        transform: translateY(-100%) rotate(45deg);
+      }
+      100% {
+        transform: translateY(100%) rotate(45deg);
+      }
+    }
+    
+    .stat-box:hover {
+      border-color: var(--cyan);
+      transform: translateY(-10px) rotateY(5deg);
+      box-shadow: 0 15px 40px rgba(77, 238, 234, 0.4), inset 0 0 20px rgba(77, 238, 234, 0.1);
+    }
+    
     .stat-num {
       font-family: var(--font-pixel);
       font-size: 1.5rem;
       color: var(--green);
       display: block; margin-bottom: 5px;
+      animation: stat-glow 2s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+    
+    @keyframes stat-glow {
+      0%, 100% {
+        text-shadow: 0 0 10px var(--green);
+      }
+      50% {
+        text-shadow: 0 0 20px var(--green), 0 0 30px var(--green), 0 0 40px var(--green);
+      }
     }
     
     .divider {
@@ -283,6 +589,19 @@
       background: repeating-linear-gradient(90deg, var(--cyan) 0, var(--cyan) 10px, transparent 10px, transparent 20px);
       margin: 40px 0;
       opacity: 0.5;
+      position: relative;
+      animation: divider-pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes divider-pulse {
+      0%, 100% {
+        opacity: 0.5;
+        box-shadow: 0 0 5px var(--cyan);
+      }
+      50% {
+        opacity: 0.8;
+        box-shadow: 0 0 15px var(--cyan), 0 0 25px var(--cyan);
+      }
     }
 
     /* --- FOOTER --- */
@@ -311,11 +630,33 @@
       background-size: 100% 2px, 3px 100%;
       pointer-events: none;
     }
+    
+    /* Cursor trail styles */
+    .cursor-trail {
+      position: fixed;
+      border-radius: 50%;
+      background: rgba(77, 238, 234, 0.5);
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.1s ease;
+    }
+    
+    .cursor-trail-1 { width: 10px; height: 10px; opacity: 0.5; }
+    .cursor-trail-2 { width: 9px; height: 9px; opacity: 0.45; }
+    .cursor-trail-3 { width: 8px; height: 8px; opacity: 0.4; }
+    .cursor-trail-4 { width: 7px; height: 7px; opacity: 0.35; }
+    .cursor-trail-5 { width: 6px; height: 6px; opacity: 0.3; }
+    .cursor-trail-6 { width: 5px; height: 5px; opacity: 0.25; }
+    .cursor-trail-7 { width: 4px; height: 4px; opacity: 0.2; }
+    .cursor-trail-8 { width: 3px; height: 3px; opacity: 0.15; }
+    .cursor-trail-9 { width: 2px; height: 2px; opacity: 0.1; }
+    .cursor-trail-10 { width: 1px; height: 1px; opacity: 0.05; }
 
   </style>
 </head>
 <body>
 
+  <div class="geometric-shapes" id="shapesContainer"></div>
   <div class="stars" id="starContainer"></div>
 
   <div class="nav">
@@ -563,7 +904,7 @@
 
     // Generate Stars Script
     const starContainer = document.getElementById('starContainer');
-    const starCount = 100;
+    const starCount = 150;
 
     for (let i = 0; i < starCount; i++) {
       const star = document.createElement('div');
@@ -576,6 +917,208 @@
       star.style.setProperty('--duration', duration + 's');
       starContainer.appendChild(star);
     }
+    
+    // Generate 3D CSS Geometric Shapes
+    const shapesContainer = document.getElementById('shapesContainer');
+    const shapeTypes = ['cube', 'pyramid', 'octagon', 'hexagon'];
+    const colors = [
+      'rgba(77, 238, 234, 0.15)',   // cyan
+      'rgba(255, 0, 85, 0.15)',      // pink
+      'rgba(180, 255, 0, 0.15)',     // green
+      'rgba(241, 196, 15, 0.15)'     // yellow
+    ];
+    
+    // Create additional floating shapes
+    for (let i = 0; i < 6; i++) {
+      const shape = document.createElement('div');
+      shape.classList.add('shape');
+      const shapeType = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+      shape.classList.add(shapeType);
+      
+      // Random positioning
+      shape.style.top = Math.random() * 80 + '%';
+      shape.style.left = Math.random() * 80 + '%';
+      
+      // Random size variation
+      const scale = 0.5 + Math.random() * 1;
+      shape.style.transform = `scale(${scale})`;
+      
+      // Random animation duration
+      const duration = 15 + Math.random() * 15;
+      shape.style.animationDuration = `${duration}s`;
+      
+      // Set color based on type
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      if (shapeType === 'octagon' || shapeType === 'hexagon') {
+        shape.style.background = color;
+      } else if (shapeType === 'pyramid') {
+        shape.style.borderBottomColor = color;
+      } else if (shapeType === 'cube') {
+        shape.style.background = color;
+        shape.style.border = `2px solid ${color}`;
+      }
+      
+      shapesContainer.appendChild(shape);
+    }
+    
+    // Mouse tracking for parallax effect
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    document.addEventListener('mousemove', (event) => {
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+    
+    // Parallax animation for geometric shapes
+    function updateParallax() {
+      const shapes = document.querySelectorAll('.shape');
+      shapes.forEach((shape, index) => {
+        const speed = (index + 1) * 0.5;
+        const x = mouseX * 20 * speed;
+        const y = mouseY * 20 * speed;
+        const scale = shape.style.transform.match(/scale\(([^)]+)\)/)?.[1] || 1;
+        shape.style.transform = `scale(${scale}) translate(${x}px, ${y}px)`;
+      });
+      
+      requestAnimationFrame(updateParallax);
+    }
+    
+    updateParallax();
+    
+    // 3D Card Tilt Effect
+    const cards = document.querySelectorAll('.card');
+    
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 10;
+        const rotateY = (centerX - x) / 10;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-15px) scale(1.02)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+    
+    // Stat boxes 3D effect
+    const statBoxes = document.querySelectorAll('.stat-box');
+    
+    statBoxes.forEach(box => {
+      box.addEventListener('mousemove', (e) => {
+        const rect = box.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 8;
+        const rotateY = (centerX - x) / 8;
+        
+        box.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+      });
+      
+      box.addEventListener('mouseleave', () => {
+        box.style.transform = '';
+      });
+    });
+    
+    // Scroll reveal animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.section, .card').forEach(el => {
+      observer.observe(el);
+    });
+    
+    // Parallax scrolling effect for hero
+    let ticking = false;
+    
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.pageYOffset;
+          const hero = document.querySelector('.hero-container');
+          
+          if (hero && scrolled < window.innerHeight) {
+            const speed = 0.3;
+            hero.style.transform = `perspective(1000px) translateY(${scrolled * speed}px) rotateX(${scrolled * 0.01}deg)`;
+          }
+          
+          ticking = false;
+        });
+        
+        ticking = true;
+      }
+    });
+    
+    // Button ripple effect - removed as it requires additional CSS
+    
+    // Animated cursor trail effect
+    const cursorTrail = [];
+    const trailLength = 10;
+    
+    for (let i = 0; i < trailLength; i++) {
+      const trail = document.createElement('div');
+      trail.className = `cursor-trail cursor-trail-${i + 1}`;
+      document.body.appendChild(trail);
+      cursorTrail.push({
+        element: trail,
+        x: 0,
+        y: 0
+      });
+    }
+    
+    let cursorX = 0, cursorY = 0;
+    let lastMouseMove = Date.now();
+    
+    document.addEventListener('mousemove', (e) => {
+      cursorX = e.clientX;
+      cursorY = e.clientY;
+      lastMouseMove = Date.now();
+    });
+    
+    function updateCursorTrail() {
+      // Only update if mouse moved recently
+      if (Date.now() - lastMouseMove < 100) {
+        cursorTrail.forEach((trail, index) => {
+          const targetX = cursorX;
+          const targetY = cursorY;
+          
+          // Smooth interpolation for trail effect
+          trail.x += (targetX - trail.x) * (0.3 - index * 0.02);
+          trail.y += (targetY - trail.y) * (0.3 - index * 0.02);
+          
+          trail.element.style.left = trail.x + 'px';
+          trail.element.style.top = trail.y + 'px';
+        });
+      }
+      
+      requestAnimationFrame(updateCursorTrail);
+    }
+    
+    updateCursorTrail();
   </script>
 </body>
 </html>
