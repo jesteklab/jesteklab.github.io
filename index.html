@@ -368,7 +368,10 @@
       
       <p class="sub">
         RC technology by Jeswin Best. Merging raw speed with signal discipline. 
-        From custom radios to Wi-Fi FPV and onboard compute.
+        From custom radios to Wi-Fi FPV and onboard compute. Welcome to a space where theory meets throttle, where
+        datasheets inform decisions, and where every component choice is justified by real-world testing.
+        Whether you're building your first RC vehicle or optimizing your fiftieth, you'll find practical
+        insights grounded in measurement and experience.
       </p>
       
       <div class="cta">
@@ -394,6 +397,20 @@
           Remote Control isn’t just sticks and speed. It’s the orchestration of radio links, 
           motor drivers, power budgeting, and latency control. We make the systems merge—like 
           black and red—into one responsive unit.
+        </p>
+        <p>
+          At JesTek, we believe in the beauty of well-engineered systems. Whether you're piloting 
+          a racing drone through tight gates, navigating an RC boat across choppy water, or flying 
+          an autonomous plane, the magic happens when hardware and software work in perfect harmony. 
+          Our approach combines hands-on experimentation with systematic testing to create reliable, 
+          responsive control systems that you can trust in the field.
+        </p>
+        <p>
+          Founded by Jeswin Best, JesTek emerged from a passion for understanding how things work 
+          at the deepest level. We don't just use off-the-shelf components—we dive into datasheets, 
+          measure signal integrity, profile thermal performance, and optimize every link in the 
+          control chain. From the moment your thumb moves a stick to when the motor responds, we 
+          care about every millisecond of latency and every milliamp of current draw.
         </p>
       </div>
 
@@ -501,6 +518,20 @@
                Prioritize video packets over chatter.
              </div>
           </div>
+          <p style="margin-top: 20px;">
+            First-person view systems transform remote control from line-of-sight operation into 
+            an immersive piloting experience. We've spent countless hours optimizing both analog 
+            5.8GHz video transmitters and modern digital streaming solutions. Each approach has 
+            its trade-offs: analog offers unbeatable low latency with graceful degradation, while 
+            digital provides crystal-clear imagery when conditions are good.
+          </p>
+          <p>
+            Our Wi-Fi FPV work focuses on turning readily available smartphones and single-board 
+            computers into capable FPV cameras. By carefully tuning encoder settings, managing 
+            network QoS, and selecting the right protocols, we've achieved sub-100ms glass-to-glass 
+            latency that's suitable for real-time control. The key is understanding every component 
+            in the video pipeline and eliminating unnecessary buffering at each stage.
+          </p>
         </div>
       </div>
     </div>
@@ -516,6 +547,7 @@
           <span class="tag">PROJECT_01</span>
           <h3>Phone-Cam RTSP</h3>
           <p>Turning a smartphone into a low-latency FPV camera with tuned bitrate, locked FPS, and a lightweight ground station.</p>
+          <p style="margin-top:10px; font-size:0.85rem; color:#888;">This project explores using commodity Android devices as FPV cameras. By running RTSP server apps and carefully tuning encoder parameters, we achieve respectable latency suitable for casual flying. The challenge lies in managing Android's aggressive power management and ensuring consistent frame delivery.</p>
           <a href="#" style="color:var(--cyan); font-size:0.8rem;">[ READ LOG ]</a>
         </div>
 
@@ -524,12 +556,14 @@
           <h3>Failsafe Drills</h3>
           <p>Loss-of-link rehearsals. Configuring throttle curves to keep vehicles predictable when the radio goes silent.</p>
           <a href="#" style="color:var(--cyan); font-size:0.8rem;">[ READ LOG ]</a>
+          <p style="margin-top:10px; font-size:0.85rem; color:#888;">Safety first. We practice deliberate radio disconnects to verify failsafe behavior. Does your quad descend smoothly or tumble? Does your boat circle or drift? These drills reveal configuration gaps before real emergencies happen. We document receiver settings, flight controller parameters, and the resulting behavior for various vehicle types.</p>
         </div>
 
         <div class="card">
           <span class="tag">PROJECT_03</span>
           <h3>Thermal Limits</h3>
           <p>Pushing ESCs past brochure numbers with temperature probes under sustained high-amp loads.</p>
+          <p style="margin-top:10px; font-size:0.85rem; color:#888;">ESC manufacturers list current ratings under ideal cooling. Real-world performance often differs. We use thermal cameras and thermocouples to map heat distribution during sustained loads. This data helps select appropriate ESCs for specific applications and informs mounting decisions for maximum heat dissipation.</p>
           <a href="#" style="color:var(--cyan); font-size:0.8rem;">[ READ LOG ]</a>
         </div>
         
@@ -537,6 +571,7 @@
           <span class="tag">PROJECT_04</span>
           <h3>Router-on-Board</h3>
           <p>Mounting compact routers as mobile APs for command + video. WDS testing and channel isolation.</p>
+          <p style="margin-top:10px; font-size:0.85rem; color:#888;">Why rely on distant infrastructure? We mount miniature routers directly on vehicles to create mobile access points. This enables simultaneous video streaming and telemetry data on separate channels. The trick is managing power consumption, ensuring stable voltage despite motor noise, and preventing RF interference with control links.</p>
           <a href="#" style="color:var(--cyan); font-size:0.8rem;">[ READ LOG ]</a>
         </div>
       
@@ -568,6 +603,21 @@
       <div class="card" style="border-color: var(--green);">
         <h2 style="border:none; text-align:center; color: var(--green);">READY TO JOIN THE LAB?</h2>
         <p>Swap configs, troubleshoot builds, and share blackbox logs.</p>
+        <p>
+          Building RC systems can be a solitary pursuit, but it doesn't have to be. Our Discord 
+          community brings together enthusiasts, tinkerers, and engineers who share a common passion 
+          for making things fly, drive, and sail with precision. Whether you're debugging your first 
+          ESC configuration or optimizing a competition-grade setup, you'll find friendly folks ready 
+          to help troubleshoot, celebrate successes, and share hard-won knowledge.
+        </p>
+        <p>
+          We discuss everything from motor selection and battery chemistry to firmware tuning and 
+          telemetry analysis. Members share their build logs, post oscilloscope captures of signal 
+          problems, and collaborate on open-source tools. It's a judgment-free zone where beginners 
+          can ask basic questions and experts can dive deep into technical minutiae. The best part? 
+          Everyone learns something new, because RC technology evolves constantly and there's always 
+          another optimization to discover.
+        </p>
         <br>
         <a class="btn" style="background:var(--green); color:black;" href="https://discord.gg/8r9rMNsjyk" target="_blank" rel="noopener">CONNECT TO DISCORD</a>
       </div>
